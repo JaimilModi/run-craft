@@ -4,7 +4,6 @@ import { Monaco } from "@monaco-editor/react";
 import { CodeEditorState } from "@/types";
 
 const getInitialState = () => {
-  //nigga is on server side, so return default value to that nigga
   if (typeof window === "undefined") {
     return {
       language: "javascript",
@@ -12,10 +11,11 @@ const getInitialState = () => {
       theme: "vs-dark",
     };
   }
-  // nigga is now on client, so return local value to that niggaaaaaa
+
   const savedLanguage = localStorage.getItem("editor-language") || "javascript";
   const savedTheme = localStorage.getItem("editor-theme") || "vs-dark";
   const savedFontSize = localStorage.getItem("editor-font-size") || 16;
+
   return {
     language: savedLanguage,
     theme: savedTheme,
@@ -25,6 +25,7 @@ const getInitialState = () => {
 
 export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
   const initialState = getInitialState();
+
   return {
     ...initialState,
     output: "",
@@ -32,25 +33,31 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
     error: null,
     editor: null,
     executionResult: null,
+
     getCode: () => get().editor?.getValue() || "",
+
     setEditor: (editor: Monaco) => {
       const savedCode = localStorage.getItem(`editor-code-${get().language}`);
       if (savedCode) editor.setValue(savedCode);
       set({ editor });
     },
+
     setTheme: (theme: string) => {
       localStorage.setItem("editor-theme", theme);
       set({ theme });
     },
+
     setFontSize: (fontSize: number) => {
       localStorage.setItem("editor-font-size", fontSize.toString());
       set({ fontSize });
     },
+
     setLanguage: (language: string) => {
       const currentCode = get().editor?.getValue();
       if (currentCode) {
         localStorage.setItem(`editor-code-${get().language}`, currentCode);
       }
+
       localStorage.setItem("editor-language", language);
 
       set({
@@ -59,78 +66,97 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
         error: null,
       });
     },
+
     runCode: async () => {
       const { language, getCode } = get();
       const code = getCode();
 
-      if (!code) {
-        set({ error: "Enter Some Code" });
+      if (!code.trim()) {
+        set({ error: "Please enter some code." });
         return;
       }
+
+      const languageConfig = LANGUAGE_CONFIG[language];
+
+      if (!languageConfig || !languageConfig.judge0Id) {
+        set({ error: "Unsupported language selected." });
+        return;
+      }
+
       set({ isRunning: true, error: null, output: "" });
+
       try {
-        const runtime = LANGUAGE_CONFIG[language].pistonRuntime;
-        const response = await fetch("https://emkc.org/api/v2/piston/execute", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          "https://ce.judge0.com/submissions?base64_encoded=false&wait=true",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              language_id: languageConfig.judge0Id,
+              source_code: code,
+            }),
           },
-          body: JSON.stringify({
-            language: runtime.language,
-            version: runtime.version,
-            files: [{ content: code }],
-          }),
-        });
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to execute code.");
+        }
+
         const data = await response.json();
-        console.log("data from piston:", data);
+        console.log("Judge0 response:", data);
 
-        //api fati gayu
-        //TODO
-        if (data.message) {
+        // Compilation error
+        if (data.compile_output) {
+          const compileError = data.compile_output.trim();
           set({
-            error: data.message,
-            executionResult: { code, output: "", error: data.message },
-          });
-          return;
-        }
-
-        //compilation sachavo benchooo
-        if (data.compile && data.compile.code !== 0) {
-          const error = data.compile.stderr || data.compile.output;
-          set({
-            error,
+            error: compileError,
             executionResult: {
               code,
               output: "",
-              error,
+              error: compileError,
             },
           });
           return;
         }
-        if (data.run && data.run.code !== 0) {
-          const error = data.run.stderr || data.run.output;
+
+        // Runtime error
+        if (data.stderr) {
+          const runtimeError = data.stderr.trim();
           set({
-            error,
+            error: runtimeError,
             executionResult: {
               code,
               output: "",
-              error,
+              error: runtimeError,
             },
           });
           return;
         }
-        //chali jay tyare
-        const output = data.run.output;
+
+        // Success
+        const output = (data.stdout || "").trim();
+
         set({
-          output: output.trim(),
+          output: output || "Program executed successfully (no output).",
           error: null,
-          executionResult: { code, output: output.trim(), error: null },
+          executionResult: {
+            code,
+            output,
+            error: null,
+          },
         });
-      } catch (error) {
-        console.log("Error running code:", error);
+      } catch (err) {
+        console.error("Execution error:", err);
+
         set({
-          error: "Error running code",
-          executionResult: { code, output: "", error: "Error running code" },
+          error: "Something went wrong while executing the code.",
+          executionResult: {
+            code,
+            output: "",
+            error: "Execution failed.",
+          },
         });
       } finally {
         set({ isRunning: false });
