@@ -9,6 +9,7 @@ import { Editor } from "@monaco-editor/react";
 import { useClerk } from "@clerk/nextjs";
 import { EditorPanelSkeleton } from "./EditorPanelSkeleton";
 import useMounted from "@/hooks/useMounted";
+import ShareSnippetDialog from "./ShareSnippetDialog";
 
 function EditorPanel() {
   const clerk = useClerk();
@@ -73,8 +74,8 @@ function EditorPanel() {
               <div className="flex items-center gap-3">
                 <input
                   type="range"
-                  min="12" //TODO
-                  max="24" //TODO
+                  min="12" //TODO Changeable
+                  max="24" //TODO Changeable
                   value={fontSize}
                   onChange={(e) =>
                     handleFontSizeChange(parseInt(e.target.value))
@@ -120,7 +121,7 @@ function EditorPanel() {
               beforeMount={defineMonacoThemes}
               onMount={(editor) => setEditor(editor)}
               options={{
-                minimap: { enabled: false }, // TODO
+                minimap: { enabled: false }, // TODO Changeable for minimap
                 fontSize,
                 automaticLayout: true,
                 scrollBeyondLastLine: false,
@@ -146,6 +147,7 @@ function EditorPanel() {
           {!clerk.loaded && <EditorPanelSkeleton />}
         </div>
       </div>
+      {isShareDialogOpen && <ShareSnippetDialog onClose={()=> setIsShareDialogOpen(false)} />}
     </div>
   );
 }
