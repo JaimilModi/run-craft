@@ -1,11 +1,14 @@
-# 🚀 Run‑Craft — Online Code Editor
+# 🚀 Run-Craft — Online Code Editor
 
-Run‑Craft is a modern **browser-based online code editor and execution
+
+Run-Craft is a modern **browser-based online code editor and execution
 platform** built for developers who want to write, run, and share code
 instantly.
 
 It provides a clean UI, real-time execution, authentication, and a
 smooth developer experience — all inside the browser.
+
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://run-craft.vercel.app/)
 
 ------------------------------------------------------------------------
 
