@@ -9,6 +9,7 @@
  */
 
 import type * as codeExecutions from "../codeExecutions.js";
+import type * as contributions from "../contributions.js";
 import type * as http from "../http.js";
 import type * as lemonSqueezy from "../lemonSqueezy.js";
 import type * as snippets from "../snippets.js";
@@ -22,6 +23,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   codeExecutions: typeof codeExecutions;
+  contributions: typeof contributions;
   http: typeof http;
   lemonSqueezy: typeof lemonSqueezy;
   snippets: typeof snippets;
