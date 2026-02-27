@@ -54,28 +54,17 @@ export const LANGUAGE_CONFIG: LanguageConfig = {
 }`,
   },
 
-  go: {
-    id: "go",
-    label: "Go",
-    logoPath: "/go.png",
-    judge0Id: 107,
-    monacoLanguage: "go",
-    defaultCode: `package main
-import "fmt"
+  c: {
+    id: "c",
+    label: "C",
+    logoPath: "/c.png",
+    judge0Id: 50,
+    monacoLanguage: "c",
+    defaultCode: `#include <stdio.h>
 
-func main() {
-  fmt.Println("Hello Go")
-}`,
-  },
-
-  rust: {
-    id: "rust",
-    label: "Rust",
-    logoPath: "/rust.png",
-    judge0Id: 108,
-    monacoLanguage: "rust",
-    defaultCode: `fn main() {
-  println!("Hello Rust");
+int main() {
+  printf("Hello C\\n");
+  return 0;
 }`,
   },
 
@@ -109,6 +98,31 @@ class Program {
 }`,
   },
 
+  go: {
+    id: "go",
+    label: "Go",
+    logoPath: "/go.png",
+    judge0Id: 107,
+    monacoLanguage: "go",
+    defaultCode: `package main
+import "fmt"
+
+func main() {
+  fmt.Println("Hello Go")
+}`,
+  },
+
+  rust: {
+    id: "rust",
+    label: "Rust",
+    logoPath: "/rust.png",
+    judge0Id: 108,
+    monacoLanguage: "rust",
+    defaultCode: `fn main() {
+  println!("Hello Rust");
+}`,
+  },
+
   ruby: {
     id: "ruby",
     label: "Ruby",
@@ -127,10 +141,6 @@ class Program {
     defaultCode: `print("Hello Swift")`,
   },
 };
-
-/* ===========================
-   THEMES (Restored Properly)
-=========================== */
 
 export const THEMES: Theme[] = [
   { id: "vs-dark", label: "VS Dark", color: "#1e1e1e" },
