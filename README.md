@@ -8,7 +8,15 @@ instantly.
 It provides a clean UI, real-time execution, authentication, and a
 smooth developer experience — all inside the browser.
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://run-craft.vercel.app/)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JaimilModi/github-profile-assets/main/run-craft.png" alt="Run-Craft Preview" width="85%">
+</p>
+
+<p align="center">
+  <a href="https://run-craft.vercel.app/">
+    <img src="https://img.shields.io/badge/Live-Demo-blue?style=for-the-badge&logo=vercel">
+  </a>
+</p>
 
 ------------------------------------------------------------------------
 
